@@ -21,12 +21,12 @@ define(WEB_DOMAIN, 'http://localhost'); //with http:// and NO trailing slash pls
 define(VIEW_PATH, 'app/views/'); //with trailing slash pls
 define(LAYOUT_PATH, 'app/layouts/'); //with trailing slash pls
 
-define(AV_defaultDs, "default"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
+define(AV_defaultDs, "mantra2"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
 define(AV_noDsFound, "DataSource doesn't exist!");
 
 ///includes (No cambiar)
 include_once(dirname(__FILE__) . "/" . "dataSources.php");
 ///class library
 include_once(dirname(__FILE__) . "/" . "loadClass.php");
-include_once (dirname(__FILE__) . "/" . "kissmvc.php");
+include_once (dirname(__FILE__) . "/" . "avalonMvc.php");
 include_once (dirname(__FILE__) . "/" . "includes.php");

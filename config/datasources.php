@@ -18,7 +18,7 @@ $dt1 = array("dbms" => "Mysql",
     "host" => "userver",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "wayuudic_db",
+    "database" => "mantra2_db",
     "user" => "delimce",
     "pwd" => "funky20",
 );
@@ -36,7 +36,7 @@ $dt2 = array("dbms" => "Mysql",
 
 
 ////asignacion
-$dataSources["default"] = $dt1;
+$dataSources["mantra2"] = $dt1;
 $dataSources["cursonet"] = $dt2;
 
 

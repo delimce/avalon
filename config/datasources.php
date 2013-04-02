@@ -19,24 +19,24 @@ $dt1 = array("dbms" => "Mysql",
     //  "port" => "3306",
     //  "schema" => "prueba",
     "database" => "mantra2_db",
-    "user" => "delimce",
-    "pwd" => "funky20",
+    "user" => "root",
+    "pwd" => "delimce",
 );
 
 ////otro dataSource
 
 $dt2 = array("dbms" => "Mysql",
-    "host" => "userver",
+    "host" => "50.56.209.170",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "cursonet_db",
-    "user" => "delimce",
-    "pwd" => "funky20",
+    "database" => "jmacta",
+    "user" => "jmatca",
+    "pwd" => "Hfpyopwebvs",
 );
 
 
 ////asignacion
 $dataSources["mantra2"] = $dt1;
-$dataSources["cursonet"] = $dt2;
+$dataSources["lamerienda"] = $dt2;
 
 

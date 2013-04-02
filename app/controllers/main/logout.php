@@ -7,6 +7,5 @@
 
 function _logout() {
 
-    Security::destroySession();
-    Front::redirect("main/login");
+    Security::logOff();
 }

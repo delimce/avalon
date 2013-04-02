@@ -1,0 +1,32 @@
+/* 
+    Document   : style1
+    Created on : Feb 9, 2013, 9:00:05 PM
+    Author     : luis
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body{
+    
+    
+    font-size: small;
+}
+
+div.icono { 
+    display: block;
+    float: left;
+    width: 95px;
+    height: 120px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px #999;
+    tab-size: initial;
+}
+
+div.error {
+    padding: 2px 5px;
+    text-align: right;
+    color: red;
+
+}

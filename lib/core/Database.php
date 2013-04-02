@@ -27,10 +27,15 @@ Abstract class Database {
         switch (func_num_args()) {
             default:
             case 0:
-                self::__construct1();
+                self::__construct1(); ///datasource por defecto
                 break;
             case 1:
-                self::__construct2($argv[0]);
+                if($argv[0]!=null){
+                    self::__construct2($argv[0]); ////data source seleccionado
+                }  else {
+                   self::__construct3(); ///sin conexion a base de datos
+                }                
+             
                 break;
         }
     }
@@ -60,6 +65,21 @@ Abstract class Database {
             $this->getConnect($datasource);
         }
     }
+    
+    
+    /*
+     * sin conexion a base de datos
+     */
+
+    function __construct3(){
+        
+        
+    }
+
+
+
+
+
 
     /*
      * metodo usado para la conexion (sin importar el constructor usado)
@@ -180,7 +200,7 @@ Abstract class Database {
      * metodo que ejecuta el query prepareStatement
      */
 
-    public function execute() {
+    protected function execute() {
 
         try {
             $this->getDb()->execute();

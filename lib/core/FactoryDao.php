@@ -9,18 +9,62 @@
  */
 class FactoryDao {
 
-    static public function getUsersList($myId) {
+    static public function getEmpresas() {
+
+        return "select id,nombre from tbl_cuenta where activo = 1";
+    }
+
+    static public function getIdEmpresa($nombre) {
+
+        return "select ifnull(id,0) as idEmp from tbl_cuenta where nombre = trim(lower('$nombre')) ";
+    }
+
+    static public function getLoginData($cuenta, $user, $pass) {
 
         return "SELECT
+                    u.id,
+                    u.perfil_id,
+                    u.nombre,
+                    (select nombre from tbl_cuenta where id = $cuenta) as cuenta,
+                    pe.nombre AS `profile`
+                    FROM
+                    tbl_usuario AS u
+                    INNER JOIN tbl_perfil AS pe ON u.perfil_id = pe.id
+                    WHERE
+                    u.`user` = '$user' AND u.`password` = md5('$pass') AND
+                    (u.activo = 1 AND u.borrado=0 )";
+    }
+
+    static public function getUsersList($myId = false) {
+
+        $query = "SELECT
                 u.id,
                 u.nombre,
                 u.email,
+                u.telefono1,
                 u.user,
-                p.nombre AS perfil
+                u.password,
+                u.perfil_id,
+                p.nombre AS perfil,
+                u.activo
                 FROM
                 tbl_usuario AS u
                 INNER JOIN tbl_perfil AS p ON u.perfil_id = p.id
-                where u.id != $myId";
+                where u.borrado=0";
+
+        if ($myId)
+            $query.= " and u.id = $myId";
+        else
+            $query.= " and u.id != " . Security::getUserID();
+
+        $query.=" order by u.nombre";
+
+        return $query;
+    }
+
+    static public function getProfiles() {
+
+        return "select id,nombre from tbl_perfil order by nombre desc";
     }
 
     static public function getModuleIds($perfilId) {
@@ -35,105 +79,117 @@ class FactoryDao {
                     p.id = $perfilId ";
     }
 
-    static public function getModuleList($perfilId = false) {
+    static public function getModuleList($userId = false, $cuentaId = false) {
 
-        if ($perfilId) {
+        if ($userId) {
 
             $query = "SELECT
-                    m.id,m.nombre,m.url
-                    FROM
-                    tbl_perfil AS p
-                    INNER JOIN tbl_perfil_modulo AS pm ON pm.perfil_id = p.id
-                    INNER JOIN tbl_modulo AS m ON m.id = pm.modulo_id
-                    WHERE
-                    p.id = $perfilId order by orden";
+                        m.nombre,
+                        m.id,
+                        ifnull((select 1 from tbl_permiso where modulo_id = m.id and cuenta_id = $cuentaId and usuario_id = $userId),0) as per
+                        FROM
+                        tbl_modulo m";
         } else {
 
-            $query = "SELECT m.id,m.nombre,m.url FROM tbl_modulo m order by orden";
+            $query = "SELECT m.id,m.nombre,m.descripcion FROM tbl_modulo m order by orden";
         }
 
         return $query;
     }
 
-    static public function getModuleListSelected($perfilId) {
+    static public function getModuleListLobi() {
 
-        return "SELECT
-                m.nombre,
+        $query = "SELECT distinct
                 m.id,
-                (select perfil_id from tbl_perfil_modulo where modulo_id = m.id and perfil_id = $perfilId ) as pid
+                m.nombre,
+                m.url,
+                m.icono,
+                m.descripcion
                 FROM
                 tbl_modulo AS m
-                left JOIN tbl_perfil_modulo AS p ON m.id = p.modulo_id
-                GROUP BY m.nombre
-                order by orden";
+                INNER JOIN tbl_permiso AS p ON m.id = p.modulo_id
+                WHERE
+                p.usuario_id = " . Security::getUserID() . " AND
+                p.cuenta_id = " . Security::getCuentaID();
+
+        return $query.="  ORDER BY m.orden ASC";
     }
 
-    static public function getProfiles() {
-
-        return "select id,nombre from tbl_perfil order by nombre";
-    }
-
-    static public function getProfileList() {
-
+    //////clientes
+    static public function getClientList() {
         return "SELECT
-                    p.id,
-                    p.nombre,
-                    GROUP_CONCAT(m.nombre) as modulos,
-                    if(aprueba=1,'SI','NO') as aprobador,
-                    if(discusion=1,'SI','NO') as foro_admin
-                    FROM
-                    tbl_perfil AS p
-                    INNER JOIN tbl_perfil_modulo AS pm ON p.id = pm.perfil_id
-                    INNER JOIN tbl_modulo AS m ON m.id = pm.modulo_id
-                    GROUP BY p.id";
-    }
-
-    ////foro
-
-    static public function getForoList() {
-
-        return "SELECT
-                    f.id,
-                    f.titulo,
-                    count(c.id) as comentarios,
-                    date_format(f.fecha,'%d/%m/%Y') as fecha,
-                    u.nombre as autor
-                    FROM
-                    tbl_discusion AS f
-                    LEFT JOIN tbl_discusion_comentario AS c ON f.id = c.discusion_id
-                    INNER JOIN tbl_usuario AS u ON f.usuario_id = u.id
-                    group by f.id";
-    }
-
-    static public function getCommentsList($id) {
-
-        return "SELECT
-                d.comentario,
-                date_format(d.fecha,'%d/%m/%Y') as fecha,
-                u.nombre,
-                d.id
+                c.id,
+                c.nombre,
+                g.nombre as grupo,
+                c.cif
                 FROM
-                tbl_discusion_comentario AS d
-                INNER JOIN tbl_usuario AS u ON d.usuario_id = u.id
-                where d.discusion_id = $id order by fecha desc";
+                tbl_cliente AS c
+                INNER JOIN tbl_grupo_cliente AS g ON g.id = c.grupo_id
+                order by nombre";
     }
 
-    static public function getWords($tabla, $filtro) {
+    /*
+     * sucursales
+     */
 
+    public static function getSucursalList() {
 
-        return "select palabra from $tabla where palabra like '$filtro%' ";
+        return "SELECT
+                c.nombre as cliente,
+                s.id,
+                s.nombre
+                FROM
+                tbl_cliente_sucursal AS s
+                INNER JOIN tbl_cliente AS c ON s.cliente_id = c.id
+                order by nombre";
     }
 
-    static public function getWordsUnaproved($tabla) {
+    /*
+     * productos
+     */
 
-        return "select id_palabra as id,palabra from $tabla where aprobado = 0 ";
-        
+    public static function getProductList() {
+        return "SELECT
+                    p.nombre,
+                    p.codigo,
+                    p.id,
+                    g.nombre as grupo
+                    FROM
+                    mantra2_db.tbl_grupo_producto AS g
+                    INNER JOIN mantra2_db.tbl_producto AS p ON p.grupo_id = g.id
+                    ";
     }
 
-    static public function getPageContent($id, $lang) {
+    public static function getVendorsList($cuentaid, $id = false) {
+        $query = "SELECT
+                u.id,
+                v.id as id2,
+                u.nombre,
+                u.email,
+                v.comision,
+                v.comision2,
+                v.comision3,
+                v.comision4
+                FROM
+                tbl_usuario AS u
+		INNER JOIN tbl_permiso as p ON p.usuario_id = u.id and p.modulo_id = 4 and p.cuenta_id = $cuentaid
+		-- se trae los usuarios con el modulo de ventas activado de la cuenta solicitada 
+                LEFT JOIN tbl_vendedor AS v ON v.usuario_id = u.id and v.cuenta_id = $cuentaid ";
 
+        if ($id)
+            $query.=" where u.id = " . $id;
 
-        return "select titulo,contenido from tbl_page where id = $id and lenguaje = '$lang' ";
+        return $query.=" order by u.nombre";
+    }
+
+    /*
+     * funciones para fechas consulta y grabacion 
+     */
+
+    public static function getCurrentdate() {
+
+        $idcuenta = Security::getCuentaID();
+        return "fc_fecha_actual($idcuenta) ";
     }
 
 }

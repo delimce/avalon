@@ -8,6 +8,7 @@
  */
 
 include_once 'config/setup.php';
+include_once 'lang/spanish.php'; ///idioma
 
 Security::initSession();
 

@@ -1,74 +1,73 @@
-<script type="text/javascript">
-    $(document).ready(function () {
-
-
+<script>
+      $("div[data-role*='page']").live('pageshow', function() { 
+          
+          
           $('#form1').validate({
             rules:{
-                username:{
+                empresa:{
                     required:true
                 },
-                pass:{
+                user:{
+                    required:true
+                },
+                clave:{
                     required:true
                 }
-
-            }
+                
+            }, 
+            errorElement: "div"
         });
-
-
-
-        $("#submit").click(function () {
+     
+        $("#submit").click(function(){
             
-            
+            //validando
             if (!$("#form1").valid()) return false;
             
             var formData = $("#form1").serialize();
+            
             $.ajax({
-                type:"POST",
-                url:"<?=Front::myUrl('main/login'); ?>",
-                cache:false,
-                data:formData,
-                success:function (data) {
-                 
-                 if(data!=0){
-                         location.replace('<?=Front::myUrl('main/index'); ?>');
-                     }else{
-                        $("#msg").text("sus credenciales de acceso son inválidas");
-                        $("#msg").css({color:"red", fontWeight:"bold"});
-                     }
-                  
+                type: "POST",
+                url: "<?= Front::myUrl('main/login'); ?>",
+                cache: false,
+                data: formData,
+                success: function(data){
+                    data = $.trim(data);
+                    if(data>0){
+                        $(location).attr('href','<?= Front::myUrl('main/index'); ?>');
+                    }else{
+                        alert('nombre de Empresa, clave ó usuario incorrectos');
+
+                    }
                 }
             });
-
+ 
             return false;
-
         });
-
-
     });
-    
 </script>
 
 
-<form id="form1" method="post" onsubmit="return false;">
-    <div>
-        <input type="hidden" name="LoginForm" value="1"/>
-        <table style="width:auto">
-            <thead>
-            <tr>
-                <th>LOGIN</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Usuario<br/><input  type="text" name="username" id="username" value=""/></td>
-            </tr>
-            <tr>
-                <td>Password<br/><input type="password" name="pass" id="pass" value=""/>
-                    <br>
-                    <input class="button" type="button" name="submit" id="submit" value="Aceptar"/>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+<!--div de login-->
+<div align="center">
+    <img  src="<?= Front::myUrl('images/logo-movil.png') ?>" width="156" height="79"/>
+    <p><?php echo LANG_adlogin ?></p> 
+</div>
+
+<form id="form1" action="modules/lobi.php" data-transition="slide" method="post">
+
+    <div data-role="fieldcontain">
+
+        <label style="font-weight:bold" for="empresa">Empresa</label>
+        <input type="text" data-mini="true" id="empresa" name="empresa" />
+
+        <label style="font-weight:bold" for="user">Usuario</label>
+        <input type="text" data-mini="true" id="user" name="user" />
+
+        <label style="font-weight:bold" for="clave">Clave</label>
+        <input type="password" data-mini="true" id="clave" name="clave" />
+
     </div>
+
+    <button type="submit" data-theme="b" id="submit" value="submit-value" data-inline="true"><?php echo LANG_enter ?></button>
 </form>
+<!--div de login--> 

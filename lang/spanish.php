@@ -24,6 +24,7 @@ define(LANG_save, "Guardar");
 define(LANG_enter, "Entrar");
 define(LANG_units, "Unidades");
 define(LANG_add, "Agregar");
+define(LANG_find, "Buscar");
 define(LANG_preview, "Vista previa");
 define(LANG_cant, "cantidad");
 define(LANG_select, "Seleccionar");

@@ -26,8 +26,8 @@ class ObjectDB extends Database {
     /////metodos getter y setter
     public function setTable($table) {
         $this->table = $table;
-        $this->resetFields();
         $this->sql = '';
+        $this->resetFields();
     }
 
     public function getTable() {
@@ -56,6 +56,27 @@ class ObjectDB extends Database {
 
     public function getFields() {
         print_r($this->fields);
+    }
+
+    /*
+     * agrega campos al enunciado del query
+     */
+
+    public function setFields($campos, $where = false) {
+        if ($this->sql)
+            $this->sql = '';
+        $this->sql = "select " . $campos . " from " . $this->getTable();
+        if ($where)
+            $this->setWhere($where);
+    }
+
+    /*
+     * agrega la clausula where al atributo sql
+     */
+
+    public function setWhere($where) {
+
+        $this->concatSql(" where $where");
     }
 
     /*
@@ -100,12 +121,10 @@ class ObjectDB extends Database {
 
     /*
      * metodo para insertar valores en una tabla dada la especificacion Ansi SQL
+     * por defecto se genera el id incremental
      */
 
-    public function insertInTo($table = false, $noIdentity = false) {
-
-        if ($table)
-            $this->setTable($table);
+    public function insertInTo($identity = true) {
 
         $this->sql = "insert into $this->table ";
         $f = array_keys($this->fields); ///obteniendo claves
@@ -139,6 +158,7 @@ class ObjectDB extends Database {
 
         $this->concatSql(")");
 
+        // print $this->getSql();
         /////ejecuta el insert
         if (!$this->prepare) { ///en caso de que no sea seguro preparestmt
             $this->executeQuery();
@@ -147,10 +167,8 @@ class ObjectDB extends Database {
             $this->execute();
         }
 
-        if (!$noIdentity) ////se trae el ultimo id insertado
+        if ($identity) ////se trae el ultimo id insertado
             $this->setLastId();
-
-        $this->resetFields();
     }
 
     /*
@@ -272,8 +290,26 @@ class ObjectDB extends Database {
         return $vector;
     }
 
+    /*
+     * vectorDb genera un arreglo unidimensional con los nombres de los campos consultados (simple_db)
+     */
+
+    public function vectorDb() {
+
+        $this->getResultFields();
+
+        if ($this->getNumRows() > 0) {
+
+            foreach ($this->fields as $i => $value) {
+                $vector[$i] = $value;
+            }
+        }
+
+        return $vector;
+    }
+
     /**
-     * matrizdb genera un arreglo asociativo de varias filas a partir de un query
+     * matrizdb genera un arreglo asociativo bidimensional de varias filas a partir de un query
      * (estructura_db)
      */
     public function matrixDb() {
@@ -291,6 +327,98 @@ class ObjectDB extends Database {
 
         $this->freeResult();
         return $a;
+    }
+
+    /*
+     * funcion que hace el query de los campos de la tabla seteada, devuelve el resulset asociado.
+     */
+
+    public function getTableAllRecords($fiels, $where = false, $order=false) {
+
+        $this->sql = "select $fiels from ";
+        $this->concatSql($this->getTable());
+        if ($where)
+            $this->concatSql(" where " . $where);
+        if ($order)
+            $this->concatSql(" ORDER BY " . $order);
+
+        $this->executeQuery();
+    }
+
+    /*     * ****************METODOS PARA GUARDAR VARIABLES PROVENIENTES DE FORMULARIOS******************** */
+
+
+    /* metodo insert_data, que inserta valores de un formulario en una tabla de la base de datos
+      $pref: toma el prefijo de cada campo que seran los valores que se van a insertar ejemplo r-nombre "r"
+      $sep es el caracter que separa al nombre del campo y el prefiejo ejemplo r_nombre nota la separacion debe ser un "_"
+      $tabla: la tabla de la base de datos que sufrir los cambios
+      $metodo: vectores globales segun el metodo por el cual vienen los valores del formulario "$_GET" o "$_POST"
+      IMPOTANTE: EL NOMBRE DE LOS CAMPOS DEBE SER EL NOMBRE DE LAS VARIABLES DE FORMULARIO PASADAS
+
+     */
+
+    public function dataInsert($pref, $sep, $table, $vars) {
+
+        ////objeto de base de datos
+
+        $this->setTable($table);
+
+        $r = 0;
+        while (list($key, $value) = each($vars)) {
+
+
+            $value = Form::getVar($key, $vars, false); ///hay confianza y no aplica la seguridad
+
+            if (!empty($value)) { ///si el campo no es vacio lo inserto
+                $nuevo = explode($sep, $key);
+
+                if ($nuevo[0] == $pref) {
+
+
+                    $this->setField($nuevo[1], $value);
+
+                    $r++;
+                }
+            }
+        }
+
+        ///insertando en la tabla
+        if ($this->getNumFields() > 0)
+            $this->insertInTo();
+    }
+
+    /* metodo edit_data, que edita valores de un formulario en una tabla de la base de datos
+      $pref: toma el prefijo de cada campo que seran los valores que se van a insertar ejemplo r-nombre "r"
+      $sep es el caracter que separa al nombre del campo y el prefiejo ejemplo r_nombre nota la separacion debe ser un "_"
+      $tabla: la tabla de la base de datos que sufrir� los cambios
+      $metodo: vectores globales segun el metodo por el cual vienen los valores del formulario "$_GET" o "$_POST"
+      $where: condicion de edicion ejemplo id='1'
+      IMPOTANTE: EL NOMBRE DE LOS CAMPOS DEBE SER EL NOMBRE DE LAS VARIABLES DE FORMULARIO PASADAS
+     */
+
+    public function dataUpdate($pref, $sep, $table, $vars, $where = "") {
+
+
+        $this->setTable($table);
+
+        $r = 0;
+        while (list($key, $value) = each($vars)) {
+
+            $value = Form::getvar($key, $vars, false); ///hay confianza y no aplica la seguridad
+            //$value = trim($_POST[$key]);
+            $nuevo = explode($sep, $key);
+
+            if ($nuevo[0] == $pref) {
+
+                $this->setField($nuevo[1], $value);
+
+                $r++;
+            }
+        }
+
+        ///editando en la tabla
+        if ($this->getNumFields() > 0)
+            $this->updateWhere($where);
     }
 
 }

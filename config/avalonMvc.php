@@ -7,10 +7,12 @@ require('avalonMvc_core.php');
 class Controller extends Avalon_Controller {
 
   //Example of overriding a core class method with your own
+  /*
   function request_not_found() {
     die(View::do_fetch(VIEW_PATH.'errors/404.php'));
   }
   
+  */
 }
 
 //===============================================================

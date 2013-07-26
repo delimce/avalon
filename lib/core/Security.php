@@ -112,8 +112,8 @@ class Security {
 
 
         $db2 = new ObjectDB();
-        $db2->setTable("tbl_permiso");
-        $db2->getTableFields("modulo_id", "usuario_id = " . Security::getUserID() . " and cuenta_id = " . Security::getCuentaID() . " and modulo_id = $modulo");
+        $db2->setSql(FactoryDao::getModuleAccess($modulo, Security::getUserID(), Security::getCuentaID()));
+        $db2->executeQuery();
         $db2->close();
         if ($db2->getNumRows() == 0)
             Front::redirect("error/noAccess");

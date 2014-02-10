@@ -81,3 +81,5 @@ interface TemplateDB
      */
     public function escapeString($value);
 }
+
+?>

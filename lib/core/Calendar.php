@@ -12,7 +12,10 @@
  */
 class Calendar {
 
-    //put your code here
+    function __construct($format) {
+
+        $this->setFormat($format);
+    }
 
     private $format; /// solo fecha
 
@@ -20,12 +23,12 @@ class Calendar {
 
         $this->format = $format;
     }
-    
-    private function getFormat(){
+
+    private function getFormat() {
         return $this->format;
     }
 
-    public static function getCurrentDate() {
+    public function getCurrentDate() {
 
         $formato = $this->getFormat();
         return @date($formato);
@@ -34,9 +37,23 @@ class Calendar {
     public static function getCurrentTime() {
         return date("H:i:s");
     }
-    
-    public static function getDatabaseDateTime(){
+
+    /**
+     * trae el formato de la fecha para insertar en base de datos
+     * @return type
+     */
+    public static function getDatabaseDateTime() {
         return date("Y-m-d H:i:s");
+    }
+
+    /**
+     * escribe la fecha en el formato deseado (caso basededatos)
+     * @param type $datetime
+     * @return string
+     */
+    public function datetime($datetime) {
+
+        return date($this->format, strtotime($datetime));
     }
 
 }

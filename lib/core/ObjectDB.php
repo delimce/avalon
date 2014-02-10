@@ -34,40 +34,38 @@ class ObjectDB extends Database {
         return $this->table;
     }
 
-    /*
+    /**
      * asigna un valor y clave a la lista de campos
      */
-
     public function setField($key, $val) {
         $this->fields[$key] = $val;
     }
 
-    /*
+    /**
      * retorna un valor a partir de una clave del campo
      */
-
     public function getField($key) {
         return $this->fields[$key];
     }
 
-    /*
+    /**
      * retorna toda la data del vector $fields
      */
-
     public function getFields() {
         print_r($this->fields);
     }
 
-    /*
+    /**
      * agrega campos al enunciado del query
      */
-
-    public function setFields($campos, $where = false) {
+    public function setFields($campos, $where = false, $order = false) {
         if ($this->sql)
             $this->sql = '';
         $this->sql = "select " . $campos . " from " . $this->getTable();
         if ($where)
             $this->setWhere($where);
+        if ($order)
+            $this->concatSql(" ORDER BY " . $order);
     }
 
     /*
@@ -137,7 +135,8 @@ class ObjectDB extends Database {
             if (!$this->prepare) {
 
                 if (!is_numeric($value))
-                    $valor = "'" . $this->escapeString($value) . "'"; else
+                    $valor = "'" . $this->escapeString($value) . "'";
+                else
                     $valor = $value;
             } else {
                 //////para ver el tipo de parametro a insertar
@@ -188,7 +187,8 @@ class ObjectDB extends Database {
             if (!$this->prepare) {
 
                 if (!is_numeric($value))
-                    $valor = "'" . $this->escapeString($value) . "'"; else
+                    $valor = "'" . $this->escapeString($value) . "'";
+                else
                     $valor = $value;
             }
 
@@ -234,11 +234,10 @@ class ObjectDB extends Database {
         return $this->lastId;
     }
 
-    /*
+    /**
      * trae el resultado (vector asociativo) con los campos
      * de 1 registro (analogo: simple_db)
      */
-
     public function getResultFields() {
 
         $this->resetFields();
@@ -254,12 +253,11 @@ class ObjectDB extends Database {
         $this->freeResult();
     }
 
-    /*
+    /**
      * hace una consulta simple de una tabla unica
      * fields: campos separados por ,
      * where: en caso de que filtre
      */
-
     public function getTableFields($fiels, $where = false) {
 
         $this->sql = "select $fiels from ";
@@ -270,11 +268,10 @@ class ObjectDB extends Database {
         return $this->getResultFields();
     }
 
-    /*
+    /**
      * arma un arreglo simple con el resultado de una consulta de
      *  1 campo
      */
-
     public function getArrayDb() {
 
         $this->executeQuery();
@@ -312,7 +309,7 @@ class ObjectDB extends Database {
      * matrizdb genera un arreglo asociativo bidimensional de varias filas a partir de un query
      * (estructura_db)
      */
-    public function matrixDb() {
+    public function getMatrixDb() {
 
         $this->executeQuery();
         $campos = $this->getFieldsNames();
@@ -329,11 +326,10 @@ class ObjectDB extends Database {
         return $a;
     }
 
-    /*
+    /**
      * funcion que hace el query de los campos de la tabla seteada, devuelve el resulset asociado.
      */
-
-    public function getTableAllRecords($fiels, $where = false, $order=false) {
+    public function getTableAllRecords($fiels, $where = false, $order = false) {
 
         $this->sql = "select $fiels from ";
         $this->concatSql($this->getTable());
@@ -351,7 +347,7 @@ class ObjectDB extends Database {
     /* metodo insert_data, que inserta valores de un formulario en una tabla de la base de datos
       $pref: toma el prefijo de cada campo que seran los valores que se van a insertar ejemplo r-nombre "r"
       $sep es el caracter que separa al nombre del campo y el prefiejo ejemplo r_nombre nota la separacion debe ser un "_"
-      $tabla: la tabla de la base de datos que sufrir los cambios
+      $tabla: la tabla de la base de datos que sufrir los cambios (false) omite este parametro
       $metodo: vectores globales segun el metodo por el cual vienen los valores del formulario "$_GET" o "$_POST"
       IMPOTANTE: EL NOMBRE DE LOS CAMPOS DEBE SER EL NOMBRE DE LAS VARIABLES DE FORMULARIO PASADAS
 
@@ -361,7 +357,8 @@ class ObjectDB extends Database {
 
         ////objeto de base de datos
 
-        $this->setTable($table);
+        if ($table)
+            $this->setTable($table);
 
         $r = 0;
         while (list($key, $value) = each($vars)) {
@@ -387,19 +384,20 @@ class ObjectDB extends Database {
             $this->insertInTo();
     }
 
-    /* metodo edit_data, que edita valores de un formulario en una tabla de la base de datos
+    /**
+     *  metodo edit_data, que edita valores de un formulario en una tabla de la base de datos
       $pref: toma el prefijo de cada campo que seran los valores que se van a insertar ejemplo r-nombre "r"
       $sep es el caracter que separa al nombre del campo y el prefiejo ejemplo r_nombre nota la separacion debe ser un "_"
-      $tabla: la tabla de la base de datos que sufrir� los cambios
+      $tabla: la tabla de la base de datos que sufrir los cambios (false) omite este parametro
       $metodo: vectores globales segun el metodo por el cual vienen los valores del formulario "$_GET" o "$_POST"
       $where: condicion de edicion ejemplo id='1'
       IMPOTANTE: EL NOMBRE DE LOS CAMPOS DEBE SER EL NOMBRE DE LAS VARIABLES DE FORMULARIO PASADAS
      */
-
     public function dataUpdate($pref, $sep, $table, $vars, $where = "") {
 
 
-        $this->setTable($table);
+        if ($table)
+            $this->setTable($table);
 
         $r = 0;
         while (list($key, $value) = each($vars)) {

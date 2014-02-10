@@ -8,17 +8,17 @@
  * To change this template use File | Settings | File Templates.
  */
 Abstract class Database {
-    /*
+    /**
      * variables para la conexion
      */
 
     private $dbms, $host, $port, $user, $pwd, $schema, $database;
-    /*
+    /**
      * variable para la base de datos se gun dataSource
      */
     private $db;
 
-    /*
+    /**
      * constructor de la clase
      */
 
@@ -40,7 +40,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * constructor en caso de trabajar con el dataSource por defecto
      */
 
@@ -51,7 +51,7 @@ Abstract class Database {
         $this->getConnect($datasource);
     }
 
-    /*
+    /**
      * constructor en caso de enviar el dataSource o no decidir conectarse
      */
 
@@ -67,7 +67,7 @@ Abstract class Database {
     }
     
     
-    /*
+    /**
      * sin conexion a base de datos
      */
 
@@ -81,7 +81,7 @@ Abstract class Database {
 
 
 
-    /*
+    /**
      * metodo usado para la conexion (sin importar el constructor usado)
      */
 
@@ -97,10 +97,8 @@ Abstract class Database {
             $this->schema = $dataSources[$datasource]["schema"];
             $this->database = $dataSources[$datasource]["database"];
             $this->user = $dataSources[$datasource]["user"];
-            $this->pwd = $dataSources[$datasource]["pwd"];
-
+            $this->pwd = ($dataSources[$datasource]["encrypt"])?convert_uudecode($dataSources[$datasource]["pwd"]):$dataSources[$datasource]["pwd"];  ////contiene cifrado
             //   metodo que selecciona la clase para interactuar con la base de datos
-
             $this->setDb($this->dbms);
             $this->getDb()->connect($this->host, $this->port, $this->user, $this->pwd, $this->schema, $this->database);
         } catch (ErrorException $e) {
@@ -108,7 +106,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodo para seleccionar la clase del vendor para manejar la base de datos segun el motor
      */
 
@@ -122,7 +120,7 @@ Abstract class Database {
         return $this->db;
     }
 
-    /*
+    /**
      * libera el objeto resultset
      */
 
@@ -135,7 +133,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodo que cierra una conexion de base de datos
      */
 
@@ -148,7 +146,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * libera el objeto resultset y cierra la conexion
      */
 
@@ -158,7 +156,7 @@ Abstract class Database {
         $this->getDb()->close();
     }
 
-    /*
+    /**
      * metodo para un query simple
      */
 
@@ -170,7 +168,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodo para preparar Statement
      */
 
@@ -183,7 +181,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodo para bindear los parametros del statement
      */
 
@@ -196,7 +194,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodo que ejecuta el query prepareStatement
      */
 
@@ -214,7 +212,7 @@ Abstract class Database {
         return $this->getDb()->getResult();
     }
 
-    /*
+    /**
      * para traer el nombre de los campos del registro
      */
 
@@ -223,7 +221,7 @@ Abstract class Database {
         return $this->getDb()->getResultFields();
     }
 
-    /*
+    /**
      * para traer el numero del campo devuelto
      */
 
@@ -231,7 +229,7 @@ Abstract class Database {
         return $this->getDb()->getRegNumber();
     }
 
-    /*
+    /**
      * para traer el nombre del campo devuelto
      */
 
@@ -245,7 +243,7 @@ Abstract class Database {
         return $this->getDb()->getNewId();
     }
 
-    /*
+    /**
      * traer numero de registros
      */
 
@@ -255,7 +253,7 @@ Abstract class Database {
         return $this->getDb()->getNreg();
     }
     
-    /*
+    /**
      * un sinonimo de getNumRowsRequested() 
      */
     
@@ -265,7 +263,7 @@ Abstract class Database {
 
 
 
-    /*
+    /**
      * escribe la info del server
      */
 
@@ -279,7 +277,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * escapa los caracteres especiales
      */
 
@@ -292,7 +290,7 @@ Abstract class Database {
         }
     }
 
-    /*
+    /**
      * metodos para las transacciones
      */
 
@@ -305,7 +303,7 @@ Abstract class Database {
     }
     
     
-    /*
+    /**
      * metodo que devuelve los atributos del row  con los nombres de los campos del query
      */
     

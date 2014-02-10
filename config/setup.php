@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by delimce
  * User: delimce
@@ -6,14 +7,12 @@
  * Time: 5:22 PM
  * configuracion inicial para el framework Avalon
  */
-
 /*
-* notacion de variables de configuracion del framework Avalon
-*/
+ * notacion de variables de configuracion del framework Avalon
+ */
 
 define(APP_PATH, 'app/'); //with trailing slash pls
-define(WEB_FOLDER, '/avalon/'); //CARPETA CONTENEDORA
-
+define(WEB_FOLDER, '/miporton/'); //CARPETA CONTENEDORA
 //===============================================
 // Other Settings
 //===============================================
@@ -21,7 +20,8 @@ define(WEB_DOMAIN, 'http://localhost'); //with http:// and NO trailing slash pls
 define(VIEW_PATH, 'app/views/'); //with trailing slash pls
 define(LAYOUT_PATH, 'app/layouts/'); //with trailing slash pls
 
-define(AV_defaultDs, "mantra2"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
+define(AV_defaultTimeZone,"America/Caracas"); //////zona horaria por defecto para la aplicacion
+define(AV_defaultDs, "miporton"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
 define(AV_noDsFound, "DataSource doesn't exist!");
 
 ///includes (No cambiar)

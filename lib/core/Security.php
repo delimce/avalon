@@ -56,16 +56,27 @@ class Security {
         $_SESSION["USERPROFILENAME"] = $userProfileName;
     }
 
-    ////opcional para la cuenta
+    /**
+     * trae el perfil y el id del usuario logueado
+     * @return type
+     */
+    static public function getCreador(){
+        
+        return $_SESSION["USERPROFILENAME"].'_'.$_SESSION["USERID"];
+    }
+    
+    
+    ////opcional para la franquicia
 
-    static public function setCuentaID($cuenta) {
-        $_SESSION["CUENTAID"] = $cuenta;
+    static public function setFranquiciaID($franquicia) {
+        $_SESSION["FRANQUICIAID"] = $franquicia;
     }
 
-    static public function getCuentaID() {
-        return $_SESSION["CUENTAID"];
+    static public function getFranquiciaID() {
+        return $_SESSION["FRANQUICIAID"];
     }
-
+    
+    
     /*
      * valida que la session este activa
      */
@@ -89,40 +100,33 @@ class Security {
         Front::redirect("main/login");
     }
 
-    /*
-     * verifica si es el administrador del sistema quien ingresa, basado en el perfil_id requerido
+    /**
+     * verifica si el usuario tiene permiso para entrar al modulo (en caso de que no sea administrador)
+     * se debe pasar el nombre del modulo en cuestion (acepta varios perfiles separados por ,)
      */
+    static public function hasPermissionTo($profile) {
 
-    static public function isSessionAdmin($adminValue) {
-
+        $arrayProfile = explode(",", $profile);
         Security::sessionActive();
-        if (Security::getUserProfileID() != $adminValue) {
+
+        if (!in_array(Security::getUserProfileName(), $arrayProfile)) {
             Security::logOff();
         }
     }
 
-    /*
-     * verifica si el usuario tiene permiso para entrar al modulo (en caso de que no sea administrador)
-     * se debe pasar el id del modulo en cuestion
+    /**
+     * verifica si el perfil del usuario es igual al solicitado
+     * @param type $profile
+     * @return type
      */
+    static public function isProfileName($profile) {
 
-    static public function hasPermissionTo($modulo) {
-
-        Security::sessionActive();
-
-
-        $db2 = new ObjectDB();
-        $db2->setTable("tbl_permiso");
-        $db2->getTableFields("modulo_id", "usuario_id = " . Security::getUserID() . " and cuenta_id = " . Security::getCuentaID() . " and modulo_id = $modulo");
-        $db2->close();
-        if ($db2->getNumRows() == 0)
-            Front::redirect("error/noAccess");
+        return (Security::getUserProfileName() == $profile) ? true : false;
     }
 
-    /*
+    /**
      * para revisar si hay una session iniciada
      */
-
     static public function isSessionActive() {
 
         return isset($_SESSION["USERID"]) ? true : false;

@@ -12,8 +12,11 @@
 function include_javascripts() {
 
     echo '<script type="text/javascript" src="' . Front::myUrl('jscripts/jquery-1.8.2.min.js') . '"></script>';
-    echo '<script type="text/javascript" src="' . Front::myUrl('jscripts/jquery.mobile-1.2.0.min.js') . '"></script>';
     echo '<script type="text/javascript" src="' . Front::myUrl('jscripts/jquery.validate.min.js') . '"></script>';
+    echo '<script type="text/javascript" src="'.Front::myUrl('jscripts/hideshow.js').'" ></script>';
+    echo '<script type="text/javascript" src="'.Front::myUrl('jscripts/jquery.tablesorter.min.js').'" ></script>';
+    echo '<script type="text/javascript" src="'.Front::myUrl('jscripts/jquery.equalHeight.js').'"></script>';
+
     /*
 
       echo '<script type="text/javascript" src="'.Front::myUrl('jscripts/jquery.validate.min.js').'"></script>';

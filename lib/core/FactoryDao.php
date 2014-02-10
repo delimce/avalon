@@ -9,32 +9,127 @@
  */
 class FactoryDao {
 
-    static public function getEmpresas() {
+    /**
+     * para hacer login de usuario al iniciar programa
+     * @param type $user
+     * @param type $pass
+     * @return type
+     */
+    static public function getLoginData($user, $pass) {
 
-        return "select id,nombre from tbl_cuenta where activo = 1";
+        return "call sp_login('$user', '$pass')";
     }
 
-    static public function getIdEmpresa($nombre) {
+    /**
+     * trae la lista de distribuidores
+     * @return string
+     */
+    static public function distribuidorList() {
 
-        return "select ifnull(id,0) as idEmp from tbl_cuenta where nombre = trim(lower('$nombre')) ";
+        return "call sp_distribuidor_list() ";
     }
 
-    static public function getLoginData($cuenta, $user, $pass) {
-
-        return "SELECT
-                    u.id,
-                    u.perfil_id,
-                    u.nombre,
-                    (select nombre from tbl_cuenta where id = $cuenta) as cuenta,
-                    pe.nombre AS `profile`
-                    FROM
-                    tbl_usuario AS u
-                    INNER JOIN tbl_perfil AS pe ON u.perfil_id = pe.id
-                    WHERE
-                    u.`user` = '$user' AND u.`password` = md5('$pass') AND
-                    (u.activo = 1 AND u.borrado=0 )";
+    /**
+     * trae la lista de clientes
+     * @param type $franquicia
+     * @return type
+     */
+    static public function clienteList($franquicia) {
+        return "call sp_cliente_list($franquicia) ";
     }
 
+    /**
+     * trae la lista de gsmKey
+     * @return string
+     */
+    static public function gsmKeyList() {
+        return "call sp_gsmkey_list() ";
+    }
+
+    /**
+     * trae la lista de zonas
+     * @return string
+     */
+    static public function zonasList() {
+        return "call sp_zonas_list() ";
+    }
+
+    /**
+     * trae lista de edificios
+     * @param type $franquicia
+     * @return type
+     */
+    static public function edificioList($franquicia) {
+
+        return "call sp_edificio_list($franquicia) ";
+    }
+
+    /**
+     * trae la lista de portones por franquicia
+     * @param type $franquicia
+     * @return type
+     */
+    static public function portonList($franquicia) {
+
+        return "call sp_porton_list($franquicia) ";
+    }
+
+    /**
+     * trae los datos del porton segun el id y la franquicia
+     * @param type $idporton
+     * @param type $idfrank
+     */
+    static public function portonGetById($idporton, $franquicia) {
+
+        return "call sp_porton_getdatabyid($idporton , $franquicia) ";
+    }
+
+    /**
+     * trae la lista de los administradores de edificios por franquicia
+     * @param type $franquicia
+     * @return type
+     */
+    static public function adminEdifList($franquicia) {
+
+
+        return "call sp_adminEdif_list($franquicia) ";
+    }
+
+    /**
+     * trae la lista de edificios por franquicia id, si se le pasa el id del admin trae los del administrador
+     * @param type $franquicia
+     * @return type
+     */
+    static public function getEdifByFranquicia($franquicia, $adminId) {
+
+        return "call sp_edifbyfranq_list($franquicia,$adminId) ";
+    }
+
+    
+    /**
+     * trae una lista de gsmkey sin usar para asignarle al porton (por id de edificio)
+     * @param type $edifid
+     * @return type
+     */
+    static public function getGsmKeybyEdif($edifid) {
+
+        return "call sp_edifgsmkey_list($edifid) ";
+    }
+
+    
+    /**
+     * inserta un gsmkey para un porton
+     * @param type $portonId
+     * @param type $gsmkeyId
+     * @return type
+     */
+     static public function insertPortonGsmKey($portonId, $gsmkeyId) {
+
+        return "call sp_insert_porton_gsmkey($portonId,$gsmkeyId) ";
+    }
+    
+    
+    
     static public function getUsersList($myId = false) {
 
         $query = "SELECT
@@ -99,87 +194,10 @@ class FactoryDao {
 
     static public function getModuleListLobi() {
 
-        $query = "SELECT distinct
-                m.id,
-                m.nombre,
-                m.url,
-                m.icono,
-                m.descripcion
-                FROM
-                tbl_modulo AS m
-                INNER JOIN tbl_permiso AS p ON m.id = p.modulo_id
-                WHERE
-                p.usuario_id = " . Security::getUserID() . " AND
-                p.cuenta_id = " . Security::getCuentaID();
+        $userid = Security::getUserID();
+        $cuentaid = Security::getCuentaID();
 
-        return $query.="  ORDER BY m.orden ASC";
-    }
-
-    //////clientes
-    static public function getClientList() {
-        return "SELECT
-                c.id,
-                c.nombre,
-                g.nombre as grupo,
-                c.cif
-                FROM
-                tbl_cliente AS c
-                INNER JOIN tbl_grupo_cliente AS g ON g.id = c.grupo_id
-                order by nombre";
-    }
-
-    /*
-     * sucursales
-     */
-
-    public static function getSucursalList() {
-
-        return "SELECT
-                c.nombre as cliente,
-                s.id,
-                s.nombre
-                FROM
-                tbl_cliente_sucursal AS s
-                INNER JOIN tbl_cliente AS c ON s.cliente_id = c.id
-                order by nombre";
-    }
-
-    /*
-     * productos
-     */
-
-    public static function getProductList() {
-        return "SELECT
-                    p.nombre,
-                    p.codigo,
-                    p.id,
-                    g.nombre as grupo
-                    FROM
-                    mantra2_db.tbl_grupo_producto AS g
-                    INNER JOIN mantra2_db.tbl_producto AS p ON p.grupo_id = g.id
-                    ";
-    }
-
-    public static function getVendorsList($cuentaid, $id = false) {
-        $query = "SELECT
-                u.id,
-                v.id as id2,
-                u.nombre,
-                u.email,
-                v.comision,
-                v.comision2,
-                v.comision3,
-                v.comision4
-                FROM
-                tbl_usuario AS u
-		INNER JOIN tbl_permiso as p ON p.usuario_id = u.id and p.modulo_id = 4 and p.cuenta_id = $cuentaid
-		-- se trae los usuarios con el modulo de ventas activado de la cuenta solicitada 
-                LEFT JOIN tbl_vendedor AS v ON v.usuario_id = u.id and v.cuenta_id = $cuentaid ";
-
-        if ($id)
-            $query.=" where u.id = " . $id;
-
-        return $query.=" order by u.nombre";
+        return "call sp_usuario_modulos($userid,$cuentaid)";
     }
 
     /*

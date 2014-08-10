@@ -20,6 +20,13 @@ class FactoryDao {
         return "call sp_login('$user', '$pass')";
     }
 
+    
+    static public function getEstListByCurso($curso){
+        
+        return "call sp_est_listByCurso('$curso') ";
+    }
+    
+    
     /**
      * trae la lista de distribuidores
      * @return string

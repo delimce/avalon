@@ -19,9 +19,9 @@ $dt1 = array("dbms" => "Mysql",
     "host" => "userver",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "miporton_db",
+    "database" => "vconsole",
     "user" => "root",
-    "pwd" => "'9&5L:6UC90`` `",
+    "pwd" => "delimce",
     "encrypt" => true
 );
 
@@ -31,7 +31,7 @@ $dt2 = array("dbms" => "Mysql",
     "host" => "localhost",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "mantra2_db",
+    "database" => "vconsole",
     "user" => "root",
     "pwd" => "delimce",
 );
@@ -39,7 +39,7 @@ $dt2 = array("dbms" => "Mysql",
 
 
 ////asignacion
-$dataSources["miporton"] = $dt1;
-$dataSources["lamerienda"] = $dt2;
+$dataSources["vconsole"] = $dt2;
+
 
 

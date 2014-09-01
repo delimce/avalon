@@ -38,6 +38,7 @@ define(LANG_affirmative, "Ok");
 define(LANG_negative, "No");
 
 ////////////////ADMIN
+define(LANG_adminSystem, "Administración");
 define(LANG_admin, "Administrador");
 define(LANG_adlogin, "Ingrese sus credenciales de usuario");
 define(LANG_lobi, "Menú del sistema");

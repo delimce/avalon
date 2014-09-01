@@ -12,7 +12,7 @@
  */
 
 define(APP_PATH, 'app/'); //with trailing slash pls
-define(WEB_FOLDER, '/miporton/'); //CARPETA CONTENEDORA
+define(WEB_FOLDER, '/vconsole/'); //CARPETA CONTENEDORA
 //===============================================
 // Other Settings
 //===============================================
@@ -21,8 +21,9 @@ define(VIEW_PATH, 'app/views/'); //with trailing slash pls
 define(LAYOUT_PATH, 'app/layouts/'); //with trailing slash pls
 
 define(AV_defaultTimeZone,"America/Caracas"); //////zona horaria por defecto para la aplicacion
-define(AV_defaultDs, "miporton"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
+define(AV_defaultDs, "vconsole"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
 define(AV_noDsFound, "DataSource doesn't exist!");
+define(AV_langPath, "lang/spanish.php"); ///archivo de lenguaje
 
 ///includes (No cambiar)
 include_once(dirname(__FILE__) . "/" . "dataSources.php");

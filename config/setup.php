@@ -12,7 +12,7 @@
  */
 
 define(APP_PATH, 'app/'); //with trailing slash pls
-define(WEB_FOLDER, '/'); //CARPETA CONTENEDORA
+define(WEB_FOLDER, '/vbrokers_dev/'); //CARPETA CONTENEDORA
 //===============================================
 // Other Settings
 //===============================================
@@ -23,6 +23,7 @@ define(LAYOUT_PATH, 'app/layouts/'); //with trailing slash pls
 define(AV_defaultTimeZone,"America/Caracas"); //////zona horaria por defecto para la aplicacion
 define(AV_defaultDs, "vconsole"); /////Data source por defecto. segun los data sources creados en el archivo dataSources.php
 define(AV_noDsFound, "DataSource doesn't exist!");
+define(AV_errorPath, "error/404"); ///ruta por defecto 404
 define(AV_langPath, "lang/spanish.php"); ///archivo de lenguaje
 
 //===============================================

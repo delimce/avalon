@@ -16,26 +16,25 @@ $dataSources = array();
  * deben crearse tantas estructuras como datasource se requieran manejar
  */
 $dt1 = array("dbms" => "Mysql",
-    "host" => "userver",
+    "host" => "www.vbrokers.net",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "vconsole",
-    "user" => "root",
-    "pwd" => "delimce",
+    "database" => "vbroker_dev",
+    "user" => "vinvitado",
+    "pwd" => "12345",
     "encrypt" => true
 );
 
 ////otro dataSource
 
 $dt2 = array("dbms" => "Mysql",
-    "host" => "localhost",
+    "host" => "www.vbrokers.net",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "vconsole",
-    "user" => "root",
-    "pwd" => "delimce",
+    "database" => "vbroker_dev",
+    "user" => "vinvitado",
+    "pwd" => "12345",
 );
-
 
 
 ////asignacion

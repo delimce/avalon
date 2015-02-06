@@ -11,7 +11,8 @@
 
 function include_javascripts() {
     echo '<script src="' . Front::myUrl('js/vendor/modernizr.js') . '"></script>';
-    echo '<script src="' . Front::myUrl('js/vendor/jquery.js') . '"></script>';
+    //echo '<script src="' . Front::myUrl('js/vendor/jquery.js') . '"></script>';
+	echo '<script src="' . Front::myUrl('js/vendor/jquery.min.js') . '"></script>';
     echo '<script src="' . Front::myUrl('js/foundation.min.js') . '"></script>';
 }
 

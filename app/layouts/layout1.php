@@ -1,67 +1,154 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!doctype html>
+<html class="no-js" lang="es">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <?php include_meta() ?>
+    <title>vBrokers :: <?= $siteTitle ?></title>
     <style type="text/css">
-        @import "<?= Front::myUrl('css/Mainstyle.css') ?>";
-        @import "<?= Front::myUrl('css/demo_table_jui.css') ?>";
-        @import "<?= Front::myUrl('css/smoothness/jquery-ui-1.8.4.custom.css') ?>";
-        @import "<?= Front::myUrl('css/TableTools.css') ?>";
-        @import "<?= Front::myUrl('css/jquery-ui.css') ?>";
+        @import "<?= Front::myUrl('css/bootstrap/bootstrap.min.css') ?>";
+        @import "<?= Front::myUrl('css/foundation.css') ?>";
+        @import "<?= Front::myUrl('css/foundation-icons.css') ?>";
+        @import "<?= Front::myUrl('css/w2ui/w2ui-fields-1.0.min.css') ?>";
+        @import "<?= Front::myUrl('css/fancybox/jquery.fancybox.css') ?>";
+        @import "<?= Front::myUrl('css/style.css') ?>";
+
+        <?php echo (isset($css) && is_array($css)) ? implode("\n", $css) : '' ?>
     </style>
-     <?php include_javascripts(); ?>
-    <?php echo (isset($head) && is_array($head)) ? implode("\n",$head) : ''?>
+
+    <?php include_javascripts(); ?>
+    <?php echo (isset($head) && is_array($head)) ? implode("\n", $head) : '' ?>
+
     <title><?php echo $siteTitle ?></title>
+
+    <script>
+        $(window).bind("load", function () {
+            var footer = $("#footer");
+            var pos = footer.position();
+            var height = $(window).height();
+            height = height - pos.top;
+            height = height - footer.height();
+            if (height > 0) {
+                footer.css({
+                    'margin-top': height + 'px'
+                });
+            }
+        });
+    </script>
 </head>
 
 <body>
-    
- 
-<div id="container">
 
-    <div id="logo">
-        <?php if(Security::isSessionActive()){ ?>
-         
-        <div style="float:right; margin-right: 40px; margin-top: 14px;">
-            <span id="username1" style="font-weight: bold"><?=  Security::getUserName() ?></span><br>
-            <span><a href="<?= Front::myUrl('main/logout') ?>">Cerrar Sesión</a></span>
-        </div>
-        
-        <?php } ?> 
-      </div>
+<div class="row top-head">
+    <div class="col-md-12" style="background-color: #008CBA;">
+        <nav class="top-bar" data-topbar role="navigation" style="background-color: #008CBA;">
+            <ul class="title-area">
+                <li class="name">
+                    <a href="<?= Front::myUrl("main/index") ?>">
+                        <img src="<?= Front::myUrl("img/vconsole/common/vBrokers_Logo1.png") ?>" width="60px"></a>
 
+                    <h1></h1>
+                </li>
+                <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+                <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+            </ul>
 
-    <!--MENU DEL SITIO-->
-    <ul id="navitab">
-       <?=$menuBar ?>
-    </ul>
-    <!--MENU DEL SITIO-->
+            <section class="top-bar-section" style="background-color: #008CBA;">
+                <!-- Right Nav Section -->
+                <ul class="right">
+                    <!--
+							<li class="active"><a href="#"><i class="step fi-mail size-18"></i>&nbsp;<?= LANG_adminMessages ?></a></li>
+							-->
 
+                    <li class="has-dropdown" style="background-color: #008CBA;">
+                        <a style="background-color: #008CBA;" href="#" data-dropdown="hover1"
+                           data-options="is_hover:true; align: bottom" class="tip-right radius round">
+                            <i class="step fi-torso-business size-18"></i>&nbsp;&nbsp;<?= Security::getUserName() ?></a>
+                        <ul class="dropdown">
+                            <li>
+                                <a style="background-color: #008CBA;" href="<?= Front::myUrl("setup/main") ?>">
+                                    <i class="step fi-widget size-18"></i>&nbsp;<?= LANG_setup ?></a>
+                            </li>
+                            <?php if (Security::getUserProfileID() == 1) { ?>
+                                <li>
+                                    <a style="background-color: #008CBA;"
+                                       href="<?= Front::myUrl("usuarios/listaUsuarios") ?>">
+                                        <i class="step fi-torsos-all size-18"></i>&nbsp;<?= LANG_users ?></a>
+                                </li>
+                            <?php } ?>
+                            <li>
+                                <a style="background-color: #008CBA;" href="<?= Front::myUrl("main/logout") ?>">
+                                    <i class="step fi-power size-18"></i>&nbsp;<?= LANG_exitConsole ?></a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
 
-    <div id="desc">
-        <p><?php echo $subTitle ?> </p><br>
+                <!-- Left Nav Section -->
+                <ul class="left">
+                    <li>
+                        <a style="background-color: #008CBA;" href="<?= Front::myUrl("cuentas/lista") ?>"><i
+                                class="step fi-results-demographics size-21"></i>&nbsp;<?= LANG_accounts ?> </a>
+                    </li>
+                    <li><a style="background-color: #008CBA;" href="<?= Front::myUrl("contactos/lista") ?>"><i
+                                class="step fi-torsos-all size-21"></i>&nbsp;<?= LANG_contacts ?></a></li>
+                    <li><a style="background-color: #008CBA;" href="<?= Front::myUrl("prospectos/lista") ?>"><i
+                                class="step fi-torsos-all size-21"></i>&nbsp;<?= LANG_prospects ?></a></li>
+                    <li class="has-dropdown" style="background-color: #008CBA;">
+                        <a style="background-color: #008CBA;" href="<?= Front::myUrl("propiedades/listAll") ?>"
+                           data-dropdown="hover1"
+                           data-options="is_hover:true; align: bottom" class="tip-right radius round">
+                            <i class="step fi-home size-21"></i>&nbsp;<?= LANG_realEstate ?></a>
+                        <ul class="dropdown">
+                            <li>
+                                <?php foreach (Security::getSessionVar("INMENU")  as $menu) { ?>
+                            <li><a style="background-color: #008CBA;"
+                                   href="<?= Front::myUrl("propiedades/lista/" . $menu) ?>"><i
+                                        class="step fi-home size-21"></i>&nbsp;<?= $menu ?></a></li>
+                            <?php } ?>
+                    </li>
+                </ul>
+                </li>
+                <li><a style="background-color: #008CBA;" href="<?= Front::myUrl("oportunidades/lista") ?>"><i
+                            class="step fi-home size-21"></i>&nbsp;<?= LANG_opportunities ?></a></li>
+                </ul>
+            </section>
+        </nav>
     </div>
-
-    <div id="main">
-
-        <?php echo (isset($body) && is_array($body)) ? implode("\n", $body) : ''?>
-
-        <p>&nbsp;</p>
-
+    <div class="col-md-12 breadcrumbs">
 
     </div>
+</div>
 
+<div class="row">
 
-    <div id="footer">
-        <p>Diccionario de Computación Español / Wayuunaiki | Pütchimaajatü komputatoorachiki wayuunaikiru’usu </p>
+    <div class="large-12  columns">
+
+        <?php echo (isset($body) && is_array($body)) ? implode("\n", $body) : '' ?>
+
     </div>
 
 </div>
+
+<footer id="footer" class="row">
+    <div class="large-12 columns">
+        <hr/>
+        <div class="row">
+            <div class="large-6 columns">
+                <p style="color:#fff;">vBrokers © Copyright <?= date("Y") ?>, Versión: <?= Security::getCurrentVersion() ?></p>
+            </div>
+            <div class="large-6 columns">
+                <i class="fa fa-twitter-square"></i>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="<?= Front::myUrl('js/bootstrap/bootstrap.js') ?>"></script>
+<script src="<?= Front::myUrl('js/foundation.min.js') ?>"></script>
+<script src="<?= Front::myUrl('js/w2ui/w2ui-fields-1.0.min.js') ?>"></script>
+<script src="<?= Front::myUrl('js/fancybox/jquery.fancybox.js') ?>"></script>
+<script src="<?= Front::myUrl('js/fancybox/galeria.js') ?>"></script>
+<script>
+    $(document).foundation();
+</script>
 </body>
 </html>

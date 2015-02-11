@@ -12,11 +12,11 @@
  */
 
 define(APP_PATH, 'app/'); //with trailing slash pls
-define(WEB_FOLDER, '/vbrokers_dev/'); //CARPETA CONTENEDORA
+define(WEB_FOLDER, '/avalon/'); //CARPETA CONTENEDORA
 //===============================================
 // Other Settings
 //===============================================
-define(WEB_DOMAIN, 'http://localhost'); //with http:// and NO trailing slash pls
+define(WEB_DOMAIN, 'http://userver'); //with http:// and NO trailing slash pls
 define(VIEW_PATH, 'app/views/'); //with trailing slash pls
 define(LAYOUT_PATH, 'app/layouts/'); //with trailing slash pls
 

@@ -1,0 +1,28 @@
+2015-02-09 17:14:14 [ERROR] myLogger: un error (at /var/www/avalon/app/controllers/main/pruebaLog.php line 6)
+ 
+2015-02-09 17:14:14 [INFO] myLogger: una informacion (at /var/www/avalon/app/controllers/main/pruebaLog.php line 7)
+ 
+2015-02-09 17:17:35 [ERROR] myLogger: un error (at /var/www/avalon/app/controllers/main/pruebaLog.php line 6)
+ 
+2015-02-09 17:17:35 [INFO] myLogger: una informacion (at /var/www/avalon/app/controllers/main/pruebaLog.php line 7)
+ 
+2015-02-09 17:17:35 [WARN] myLogger: cuidado (at /var/www/avalon/app/controllers/main/pruebaLog.php line 8)
+ 
+2015-02-09 17:18:38 [ERROR] myLogger: un error (at /var/www/avalon/app/controllers/main/pruebaLog.php line 6)
+ 
+2015-02-09 17:18:38 [INFO] myLogger: una informacion (at /var/www/avalon/app/controllers/main/pruebaLog.php line 7)
+ 
+2015-02-09 17:18:38 [WARN] myLogger: cuidado (at /var/www/avalon/app/controllers/main/pruebaLog.php line 8)
+ 
+2015-02-09 17:19:35 [ERROR] myLogger: un error (at /var/www/avalon/app/controllers/main/pruebaLog.php line 6)
+ 
+2015-02-09 17:19:35 [INFO] myLogger: una informacion (at /var/www/avalon/app/controllers/main/pruebaLog.php line 7)
+ 
+2015-02-09 17:19:35 [WARN] myLogger: cuidado (at /var/www/avalon/app/controllers/main/pruebaLog.php line 8)
+ 
+2015-02-09 17:22:34 [ERROR] myLogger: un error (at /var/www/avalon/app/controllers/main/pruebaLog.php line 6)
+ 
+2015-02-09 17:22:34 [INFO] myLogger: una informacion (at /var/www/avalon/app/controllers/main/pruebaLog.php line 7)
+ 
+2015-02-09 17:22:34 [WARN] myLogger: cuidado (at /var/www/avalon/app/controllers/main/pruebaLog.php line 8)
+ 

@@ -34,8 +34,6 @@ include_once (dirname(__FILE__) . "/" . "avalonMvc.php");
 include_once (dirname(__FILE__) . "/" . "includes.php");
 include_once(dirname(__FILE__) . "/" . "dataSources.php");
 
-
-
 //===============================================
 // errors handlers
 //===============================================

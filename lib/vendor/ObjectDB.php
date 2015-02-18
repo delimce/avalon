@@ -7,7 +7,8 @@
  * Time: 9:54 AM
  * To change this template use File | Settings | File Templates.
  */
-class ObjectDB extends Database {
+class ObjectDB extends Database
+{
 
     private $table; ///tabla de base de datos
     private $fields = array(); ///campos de la tabla (vector asociativo)
@@ -18,7 +19,8 @@ class ObjectDB extends Database {
     private $paramsTypes = ''; ///array tipos de los parametros para ejecutar el query (bind_param)
     private $prepareValues = array(); ///array con los valores de los parametros
 
-    private function resetFields() {
+    private function resetFields()
+    {
 
         $this->fields = array();
         $this->paramsTypes = '';
@@ -26,27 +28,31 @@ class ObjectDB extends Database {
     }
 
     /////metodos getter y setter
-    public function setTable($table) {
+    public function setTable($table)
+    {
         $this->table = $table;
         $this->sql = '';
         $this->resetFields();
     }
 
-    public function getTable() {
+    public function getTable()
+    {
         return $this->table;
     }
 
     /**
      * asigna un valor y clave a la lista de campos
      */
-    public function setField($key, $val) {
+    public function setField($key, $val)
+    {
         $this->fields[$key] = $val;
     }
 
     /**
      * llena el vector de campos con los nombres de los campos del query
      */
-    public function setFieldsVector(){
+    public function setFieldsVector()
+    {
 
         $this->fields = $this->getFieldsNames();
     }
@@ -54,21 +60,24 @@ class ObjectDB extends Database {
     /**
      * retorna un valor a partir de una clave del campo
      */
-    public function getField($key) {
+    public function getField($key)
+    {
         return $this->fields[$key];
     }
 
     /**
      * retorna toda la data del vector $fields
      */
-    public function getFields() {
+    public function getFields()
+    {
         return $this->fields;
     }
 
     /**
      * agrega campos al enunciado del query
      */
-    public function setFields($campos, $where = false, $order = false) {
+    public function setFields($campos, $where = false, $order = false)
+    {
         if ($this->sql)
             $this->sql = '';
         $this->sql = "select " . $campos . " from " . $this->getTable();
@@ -82,7 +91,8 @@ class ObjectDB extends Database {
      * agrega la clausula where al atributo sql
      */
 
-    public function setWhere($where) {
+    public function setWhere($where)
+    {
 
         $this->concatSql(" where $where");
     }
@@ -91,7 +101,8 @@ class ObjectDB extends Database {
     /**metodo para ordenar la sentencia SQL
      * @param $orden
      */
-    public function orderBy($orden){
+    public function orderBy($orden)
+    {
         $this->concatSql(" order by $orden ");
     }
 
@@ -99,16 +110,19 @@ class ObjectDB extends Database {
      * retorna el numero de campos en el objetoDB
      */
 
-    public function getNumFields() {
+    public function getNumFields()
+    {
 
         return count($this->fields);
     }
 
-    public function setSql($sql) {
+    public function setSql($sql)
+    {
         $this->sql = $sql;
     }
 
-    public function getSql() {
+    public function getSql()
+    {
         return $this->sql;
     }
 
@@ -116,22 +130,25 @@ class ObjectDB extends Database {
      * ejecuta el metodo simpleQuery de Database
      */
 
-    public function executeQuery() {
+    public function executeQuery()
+    {
 
         $this->simpleQuery($this->getSql());
     }
 
     ////metodo para concatenar en la variable del query sql
-    public function concatSql($string) {
+    public function concatSql($string)
+    {
 
-        $this->sql .= (string) $string;
+        $this->sql .= (string)$string;
     }
 
     /*
      * setea el uso del prepare Statement para el uso de todos los querys
      */
 
-    public function setPrepare($bool = true) {
+    public function setPrepare($bool = true)
+    {
         $this->prepare = $bool;
     }
 
@@ -140,7 +157,8 @@ class ObjectDB extends Database {
      * por defecto se genera el id incremental
      */
 
-    public function insertInTo($identity = true) {
+    public function insertInTo($identity = true)
+    {
 
         $this->sql = "insert into $this->table ";
         $f = array_keys($this->fields); ///obteniendo claves
@@ -186,14 +204,15 @@ class ObjectDB extends Database {
             for ($i = 0; $i < count($this->prepareValues); $i++) {
                 $bind_name = 'bind' . $i;
                 $$bind_name = $this->prepareValues[$i];
-                $bind_names[] = & $$bind_name;
+                $bind_names[] = &$$bind_name;
             }
 
 
             //   call_user_func_array(array($this,'setParam'),$bind_names);
             // for ($p = 0; $p < count($this->paramsTypes); $p++)
 
-
+            $logger = new Log("core");
+            $logger->info("SQL:" . $this->getSql() . " values: " . implode(",", $this->prepareValues));
             $this->execute();
         }
 
@@ -205,7 +224,8 @@ class ObjectDB extends Database {
      * metodo para actualizar valores de una tabla
      */
 
-    public function updateWhere($where) {
+    public function updateWhere($where)
+    {
 
         $this->sql = "update $this->table ";
         $this->concatSql("set ");
@@ -241,12 +261,15 @@ class ObjectDB extends Database {
      * @param $value
      */
 
-    public function deleteWhereById($id, $value) {
+    public function deleteWhereById($id, $value)
+    {
 
         $this->sql = "delete from $this->table where $id = ?";
         $this->prepareStmt($this->getSql());
         $type = $this->prepareGetType($value);
         $this->setParam($type, $value);
+        $logger = new Log("core");
+        $logger->info("SQL:" . $this->getSql() . ", $id = $value");
         $this->execute();
     }
 
@@ -254,7 +277,8 @@ class ObjectDB extends Database {
      * metodo para eliminar de la tabla
      */
 
-    public function deleteWhere($where) {
+    public function deleteWhere($where)
+    {
         $this->sql = "delete from $this->table ";
         $this->concatSql("where " . $where);
 
@@ -267,7 +291,8 @@ class ObjectDB extends Database {
      * metodo para setiar el ultimoID insertado
      */
 
-    private function setLastId() {
+    private function setLastId()
+    {
         $this->lastId = $this->lastIdInserted();
     }
 
@@ -275,7 +300,8 @@ class ObjectDB extends Database {
      * obteniendo el ultimoID insertado
      */
 
-    public function getLastId() {
+    public function getLastId()
+    {
         return $this->lastId;
     }
 
@@ -283,7 +309,8 @@ class ObjectDB extends Database {
      * trae el resultado (vector asociativo) con los campos
      * de 1 registro (analogo: simple_db)
      */
-    public function getResultFields() {
+    public function getResultFields()
+    {
 
         $this->resetFields();
         $this->executeQuery();
@@ -303,7 +330,8 @@ class ObjectDB extends Database {
      * fields: campos separados por ,
      * where: en caso de que filtre
      */
-    public function getTableFields($fiels, $where = false) {
+    public function getTableFields($fiels, $where = false)
+    {
 
         $this->sql = "select $fiels from ";
         $this->concatSql($this->getTable());
@@ -317,7 +345,8 @@ class ObjectDB extends Database {
      * arma un arreglo simple con el resultado de una consulta de
      *  1 campo
      */
-    public function getArrayDb() {
+    public function getArrayDb()
+    {
 
         $this->executeQuery();
 
@@ -336,7 +365,8 @@ class ObjectDB extends Database {
      * vectorDb genera un arreglo unidimensional con los nombres de los campos consultados (simple_db)
      */
 
-    public function vectorDb() {
+    public function vectorDb()
+    {
 
         $this->getResultFields();
 
@@ -355,7 +385,8 @@ class ObjectDB extends Database {
      * matrizdb genera un arreglo asociativo bidimensional de varias filas a partir de un query
      * (estructura_db)
      */
-    public function getMatrixDb() {
+    public function getMatrixDb()
+    {
 
         $this->executeQuery();
         $campos = $this->getFieldsNames();
@@ -375,7 +406,8 @@ class ObjectDB extends Database {
     /**
      * funcion que hace el query de los campos de la tabla seteada, devuelve el resulset asociado.
      */
-    public function getTableAllRecords($fiels, $where = false, $order = false) {
+    public function getTableAllRecords($fiels, $where = false, $order = false)
+    {
 
         $this->sql = "select $fiels from ";
         $this->concatSql($this->getTable());
@@ -399,7 +431,8 @@ class ObjectDB extends Database {
 
      */
 
-    public function dataInsert($pref, $sep, $table, $vars) {
+    public function dataInsert($pref, $sep, $table, $vars)
+    {
 
         ////objeto de base de datos
 
@@ -427,7 +460,7 @@ class ObjectDB extends Database {
 
         ///insertando en la tabla
         if ($this->getNumFields() > 0)
-        //  $this->setPrepare(true); ////insertando con seguridad
+            //  $this->setPrepare(true); ////insertando con seguridad
             $this->insertInTo();
     }
 
@@ -440,7 +473,8 @@ class ObjectDB extends Database {
      * $where: condicion de edicion ejemplo id='1'
      * IMPOTANTE: EL NOMBRE DE LOS CAMPOS DEBE SER EL NOMBRE DE LAS VARIABLES DE FORMULARIO PASADAS
      */
-    public function dataUpdate($pref, $sep, $table, $vars, $where = "") {
+    public function dataUpdate($pref, $sep, $table, $vars, $where = "")
+    {
 
 
         if ($table)

@@ -28,12 +28,12 @@ $dt1 = array("dbms" => "Mysql",
 ////otro dataSource
 
 $dt2 = array("dbms" => "Mysql",
-    "host" => "www.vbrokers.net",
+    "host" => "userver",
     //  "port" => "3306",
     //  "schema" => "prueba",
-    "database" => "vbroker_dev",
-    "user" => "vinvitado",
-    "pwd" => "12345",
+    "database" => "vbrokers_dev",
+    "user" => "root",
+    "pwd" => "delimce",
 );
 
 

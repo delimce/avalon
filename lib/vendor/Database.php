@@ -104,7 +104,8 @@ Abstract class Database
             $this->setDb($this->dbms);
             $this->getDb()->connect($this->host, $this->port, $this->user, $this->pwd, $this->schema, $this->database);
         } catch (ErrorException $e) {
-            $e->getMessage();
+            $logger = new Log("core");
+            $logger->fatal($e->getMessage());
         }
     }
 
@@ -194,10 +195,12 @@ Abstract class Database
 
     public function simpleQuery($sql)
     {
+        $logger = new Log("core");
+        $logger->info("SQL:" . $sql);
         try {
             $this->getDb()->simpleQuery($sql);
         } catch (ErrorException $e) {
-            $e->getMessage();
+            $logger->fatal($e->getMessage());
         }
     }
 
@@ -211,7 +214,8 @@ Abstract class Database
         try {
             $this->getDb()->prepareQuery($sql);
         } catch (ErrorException $e) {
-            $e->getMessage();
+            $logger = new Log("core");
+            $logger->fatal($e->getMessage());
         }
     }
 
@@ -252,7 +256,8 @@ Abstract class Database
         try {
             $this->getDb()->execute();
         } catch (ErrorException $e) {
-            $e->getMessage();
+            $logger = new Log("core");
+            $logger->fatal($e->getMessage());
         }
     }
 
@@ -352,11 +357,16 @@ Abstract class Database
 
     public function begin_transacction()
     {
+
+        $logger = new Log("core");
+        $logger->info("SQL: BEGIN TRANSACTION");
         $this->getDb()->begin_transacction();
     }
 
     public function commit_transacction()
     {
+        $logger = new Log("core");
+        $logger->info("SQL: COMMIT TRANSACTION");
         $this->getDb()->commit_transacction($result = true);
     }
 

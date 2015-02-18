@@ -61,9 +61,22 @@ class Mysql implements TemplateDB
     public function connect($host, $port, $user, $pwd, $schema, $database)
     {
 
-        $this->dbc = mysqli_connect($host, $user, $pwd, $database, $port) or die('<font color=#FF0000> conection failed: </font>' . mysqli_connect_error());
-        // Change character set to utf8
-        @mysqli_set_charset($this->dbc, "utf8");
+        global $levelError; ////si esta habilitado el manejo de errores
+        //   $this->dbc = mysqli_connect($host, $user, $pwd, $database, $port) or die('<font color=#FF0000> conection failed: </font>' . mysqli_connect_error());
+
+        if ($this->dbc = mysqli_connect($host, $user, $pwd, $database, $port)) {
+            // Change character set to utf8
+            @mysqli_set_charset($this->dbc, "utf8");
+        } else {
+            $logger = new Log("core");
+            $logger->fatal(mysqli_connect_error());
+            if (isset($levelError)) {   ///con captura del error
+                Front::redirect("error/errorContactUs"); ///redirect
+            } else {
+                die('<font color=#FF0000> conection failed: </font>' . mysqli_connect_error());
+            }
+        }
+
 
     }
 
@@ -75,13 +88,35 @@ class Mysql implements TemplateDB
     public function simpleQuery($sql)
     {
 
-        $this->result = mysqli_query($this->getDbc(), $sql) or die('<font color=#FF0000> error en query: ' . $sql . ' </font>' . mysqli_error($this->getDbc()));
+        global $levelError; ////si esta habilitado el manejo de errores
+        /*
+        $this->result = mysqli_query($this->getDbc(), $sql) or die('<font color=#FF0000> something wrong in query: ' . $sql . ' </font>' . mysqli_error($this->getDbc()));
         $this->setNreg($this->numOfRowsRequested());
+        */
+
+        if ($this->result = mysqli_query($this->getDbc(), $sql)) {
+            $this->setNreg($this->numOfRowsRequested());
+
+        } else {
+            $logger = new Log("core");
+            $logger->fatal(mysqli_error($this->getDbc()));
+            $this->close(); ////cerrando conexion
+
+            if (isset($levelError)) {   ///con captura del error
+                Front::redirect("error/errorContactUs"); ///redirect
+            } else {
+                die('<font color=#FF0000> something wrong in query: ' . $sql . ' </font>' . mysqli_error($this->getDbc()));
+            }
+
+
+        }
+
     }
 
     //devuelve un arreglo con el nombre de los campos consultados enpezando desde la pos 0
 
-    public function getResultFields()
+    public
+    function getResultFields()
     {
 
         $x = 0;
@@ -97,7 +132,8 @@ class Mysql implements TemplateDB
 
     ///funcion para obtener el valor del registro en tipo numero
 
-    public function getRegNumber()
+    public
+    function getRegNumber()
     {
 
         return @mysqli_fetch_row($this->result);
@@ -105,13 +141,15 @@ class Mysql implements TemplateDB
 
     ////funcion para obtener el valor del registro en tipo cadena o nombre
 
-    public function getRegName()
+    public
+    function getRegName()
     {
 
         return @mysqli_fetch_assoc($this->result);
     }
 
-    public function prepareQuery($sql)
+    public
+    function prepareQuery($sql)
     {
 
         $this->stmt = mysqli_stmt_init($this->getDbc());
@@ -119,19 +157,22 @@ class Mysql implements TemplateDB
         //   return mysqli_prepare($this->getDbc(), $sql);
     }
 
-    public function setParam($types, $params)
+    public
+    function setParam($types, $params)
     {
         mysqli_stmt_bind_param($this->getStmt(), $types, $params);
     }
 
-    public function execute()
+    public
+    function execute()
     {
         mysqli_stmt_execute($this->getStmt());
 
         mysqli_stmt_close($this->getStmt()); // CLOSE $stmt
     }
 
-    public function freeResult()
+    public
+    function freeResult()
     {
         //  mysql_free_result($this->getDbc());
 
@@ -144,42 +185,49 @@ class Mysql implements TemplateDB
         }
     }
 
-    public function lastIdInserted()
+    public
+    function lastIdInserted()
     {
 
         $this->newId = mysqli_insert_id($this->getDbc()) or die('<font color=#FF0000> Error en ID generado de insert</font>' . mysqli_error($this->getDbc()));
     }
 
-    public function numOfRowsRequested()
+    public
+    function numOfRowsRequested()
     {
         return @mysqli_num_rows($this->getResult());
     }
 
-    public function getServerInfo()
+    public
+    function getServerInfo()
     {
 
         return mysqli_get_host_info($this->getDbc());
     }
 
-    public function escapeString($value)
+    public
+    function escapeString($value)
     {
 
         return mysqli_real_escape_string($this->getDbc(), $value);
     }
 
-    public function getNewId()
+    public
+    function getNewId()
     {
         return $this->newId;
     }
 
-    public function begin_transacction()
+    public
+    function begin_transacction()
     {
 
         ////iniciando la transaccion
         mysqli_autocommit($this->dbc, FALSE);
     }
 
-    public function commit_transacction($result = true)
+    public
+    function commit_transacction($result = true)
     {
 
         if ($result)
@@ -193,7 +241,8 @@ class Mysql implements TemplateDB
      * metodo para transformar en atributos los campos regresados de una consulta
      */
 
-    public function rowFields()
+    public
+    function rowFields()
     {
 
         return mysqli_fetch_object($this->result);

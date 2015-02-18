@@ -120,6 +120,9 @@ class Security
     static public function logOff()
     {
 
+        $logger = new Log("core");
+        $user = Security::getUserID();
+        $logger->info("user $user session has finished ");
         Security::destroySession();
         Front::redirect("main/login");
     }
@@ -129,6 +132,10 @@ class Security
      */
     static public function noAccessRedirect()
     {
+
+        $logger = new Log("core");
+        $user = Security::getUserID();
+        $logger->info("user $user hasn't sufficient permissions to access ... ");
         Front::redirect("error/noAccess");
     }
 

@@ -6,9 +6,9 @@
  * Time: 02:31 PM
  */
 
-$level = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED;
+$levelError = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED;
 
-set_error_handler('myErrorHandler', $level);
+set_error_handler('myErrorHandler', $levelError);
 
 function myErrorHandler($errno, $message, $file, $line)
 {

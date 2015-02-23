@@ -4,7 +4,7 @@ function _pruebaLog(){
 
 
     $db = new ObjectDB();
-    $db->setSql("select 1");
+    $db->setSql("select 999");
     $db->executeQuery();
     echo "hola";
     $db->close();

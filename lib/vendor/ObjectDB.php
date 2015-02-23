@@ -126,13 +126,15 @@ class ObjectDB extends Database
         return $this->sql;
     }
 
-    /*
-     * ejecuta el metodo simpleQuery de Database
+    /** ejecuta el metodo simpleQuery de Database, con nivel de log (opcional)
+     * @param string $defaultLog
      */
-
-    public function executeQuery()
+    public function executeQuery($defaultLog='')
     {
 
+        $logger = new Log("core");
+        $logger->setCustomLogLevel($defaultLog); ///setiando log por defecto
+        $logger->customLog("SQL:" . $this->getSql());
         $this->simpleQuery($this->getSql());
     }
 
@@ -305,15 +307,15 @@ class ObjectDB extends Database
         return $this->lastId;
     }
 
-    /**
-     * trae el resultado (vector asociativo) con los campos
+    /** trae el resultado (vector asociativo) con los campos, con manejo del log de eventos
      * de 1 registro (analogo: simple_db)
+     * @param string $defaultLog
      */
-    public function getResultFields()
+    public function getResultFields($defaultLog='')
     {
 
         $this->resetFields();
-        $this->executeQuery();
+        $this->executeQuery($defaultLog);
 
         $fields = $this->getFieldsNames();
         $row = $this->getRegNumber();

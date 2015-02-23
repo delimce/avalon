@@ -12,6 +12,7 @@ class Log extends Logger
 
     private $configPath;
     private $log;
+    private $customLogLevel = '';
 
     public function __construct($logname = false)
     {
@@ -69,6 +70,44 @@ class Log extends Logger
     public function fatal($message)
     {
         $this->log->fatal($message);
+    }
+
+    /**
+     * @param string $customLogLevel
+     */
+    public function setCustomLogLevel($customLogLevel)
+    {
+        $this->customLogLevel = $customLogLevel;
+    }
+
+
+    /**registra el error segun la variable customLogLevel
+     * @param $message
+     */
+    public function customLog($message)
+    {
+
+
+        switch (strtoupper($this->customLogLevel)) { ////verifica el nivel del log
+            case "TRACE":
+                $this->log->trace($message);
+                break;
+
+            case "DEBUG":
+                $this->log->debug($message);
+                break;
+            case "WARN":
+                $this->log->warn($message);
+                break;
+            case "ERROR":
+                $this->log->error($message);
+                break;
+
+            default:
+                $this->log->info($message);
+                breake;
+        }
+
     }
 
 

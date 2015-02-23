@@ -195,11 +195,10 @@ Abstract class Database
 
     public function simpleQuery($sql)
     {
-        $logger = new Log("core");
-        $logger->info("SQL:" . $sql);
         try {
             $this->getDb()->simpleQuery($sql);
         } catch (ErrorException $e) {
+            $logger = new Log("core");
             $logger->fatal($e->getMessage());
         }
     }

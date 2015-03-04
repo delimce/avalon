@@ -392,6 +392,7 @@ class ObjectDB extends Database
 
         $this->executeQuery();
         $campos = $this->getFieldsNames();
+        $a = array();
         $i = 0;
         while ($row = $this->getRegNumber()) { //N de registros
             for ($j = 0; $j < count($campos); $j++) { ////N campos

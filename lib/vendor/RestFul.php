@@ -11,21 +11,18 @@ class RestFul
 
     private $url_elements; ///uri
     private $verb; ///methods
-    private $parameters;  //params
+    private $headers; ///headers request http
     private $format; //format sended
     private $contentType;
+    public $responseCodes = array("401" => "HTTP/1.0 401 Unauthorized", "403" => "HTTP/1.0 403 Forbidden");
 
 
     public function __construct()
     {
         $this->verb = $_SERVER['REQUEST_METHOD']; ///methods
         $this->url_elements = explode('/', $_SERVER['REQUEST_URI']);
-        $this->parseIncomingParams();
-        // initialise json as default format
-        //   $this->format = 'html';
-        if (isset($this->parameters['format'])) {
-            $this->format = $this->parameters['format'];
-        }
+        $this->headers = apache_request_headers();
+
         return true;
     }
 
@@ -46,13 +43,6 @@ class RestFul
         print_r($this->url_elements);
     }
 
-    /**
-     * print parameters
-     */
-    public function printParameters()
-    {
-        print_r($this->$parameters);
-    }
 
     /**
      * @return mixed
@@ -62,14 +52,6 @@ class RestFul
         return $this->verb;
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
 
     /**
      * @return mixed
@@ -87,46 +69,13 @@ class RestFul
         return $this->contentType;
     }
 
-
-    public function parseIncomingParams()
+    /**trae el valor del header http solicitado
+     * @param $key
+     * @return mixed
+     */
+    public function getHeader($key)
     {
-        $parameters = array();
-
-        // first of all, pull the GET vars
-        if (isset($_SERVER['QUERY_STRING'])) {
-            parse_str($_SERVER['QUERY_STRING'], $parameters);
-        }
-
-        // now how about PUT/POST bodies? These override what we got from GET
-        $body = file_get_contents("http://localhost/vconsole");
-        $content_type = false;
-        if (isset($_SERVER['CONTENT_TYPE'])) {
-            $content_type = $_SERVER['CONTENT_TYPE'];
-        }
-        switch ($content_type) {
-            case "application/json":
-                $body_params = json_decode($body);
-                if ($body_params) {
-                    foreach ($body_params as $param_name => $param_value) {
-                        $parameters[$param_name] = $param_value;
-                    }
-                }
-                $this->format = "json";
-                break;
-            case "application/x-www-form-urlencoded":
-                parse_str($body, $postvars);
-                foreach ($postvars as $field => $value) {
-                    $parameters[$field] = $value;
-
-                }
-                $this->format = "html";
-                break;
-            default:
-                // we could parse other supported formats here
-                break;
-        }
-        $this->parameters = $parameters;
-        $this->contentType = $content_type;
+        return $this->headers[$key];
     }
 
 
@@ -157,12 +106,27 @@ class RestFul
         }
     }
 
+    /**
+     * muestra el header segun el codigo de response http
+     * @param $code
+     */
+    public function getResponseCode($code)
+    {
+
+        if (array_key_exists ($code,$this->responseCodes)) {
+            $response = $this->responseCodes[$code];
+            header($response);
+        }
+
+
+    }
 
 
     /**hace un render de la estructura de datos en formato Json
      * @param $content
      */
-    public function jsonRender($content) {
+    public function jsonRender($content)
+    {
         header('Content-Type: application/json; charset=utf8');
         echo json_encode($content);
     }

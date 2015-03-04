@@ -170,8 +170,9 @@ Abstract class Database
 
     public function close()
     {
-
         try {
+            $logger = new Log("core");
+            $logger->debug("disconnected from {$this->database}");
             $this->getDb()->close();
         } catch (ErrorException $e) {
             $e->getMessage();

@@ -2,10 +2,10 @@
 function _test()
 {
     $rest = new RestFul();
-    $rest->printUrlElements();
-    $rest->printParameters();
+    $rest->getResponseCode("401");
+    die("no tiene permiso");
 
-    echo $_SERVER['HTTP_ORIGIN'];
+
 
 
 

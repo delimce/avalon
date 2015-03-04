@@ -64,11 +64,13 @@ class Mysql implements TemplateDB
         global $levelError; ////si esta habilitado el manejo de errores
         //   $this->dbc = mysqli_connect($host, $user, $pwd, $database, $port) or die('<font color=#FF0000> conection failed: </font>' . mysqli_connect_error());
 
+        $logger = new Log("core");
+
         if ($this->dbc = mysqli_connect($host, $user, $pwd, $database, $port)) {
             // Change character set to utf8
             @mysqli_set_charset($this->dbc, "utf8");
+            $logger->debug("connect to $user@$host/$database ");
         } else {
-            $logger = new Log("core");
             $logger->fatal(mysqli_connect_error());
             if (isset($levelError)) {   ///con captura del error
                 Front::redirect("error/errorContactUs"); ///redirect
@@ -82,6 +84,7 @@ class Mysql implements TemplateDB
 
     public function close()
     {
+
         mysqli_close($this->dbc);
     }
 
@@ -180,7 +183,7 @@ class Mysql implements TemplateDB
         while (mysqli_more_results($this->getDbc())) {
             if (mysqli_next_result($this->getDbc())) {
                 $this->result = mysqli_use_result($this->getDbc());
-                @mysqli_free_result($this->result);
+                if ($this->result) @mysqli_free_result($this->result);
             }
         }
     }
